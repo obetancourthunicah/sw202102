@@ -6,7 +6,9 @@ var router = express.Router(); // Clase de enrutamiento
 var  { getAllPersonas,
        getById,
        getStruct,
-       addToList } = require("./personasmem");
+       addToList,
+       update,
+       deletePersona } = require("./personasmem");
 
 // absolut endpoint : /api/personas/version
 router.get(
@@ -26,15 +28,16 @@ router.get(
 router.get(
   "/byid/:personaid",
   (req, res)=>{
-    //TODO
-    res.status(404).json({"msg":"No Implemented"});
+    console.log(req.params);
+    var { personaid } = req.params;
+    res.status(200).json(getById(personaid));
   }
 );
 /*
 SQL      HTML
-SELECT   GET
-UPDATE   PUT
-INSERT   POST
+SELECT   GET *
+UPDATE   PUT 
+INSERT   POST *
 DELETE   DELETE
 
  */
@@ -60,6 +63,31 @@ router.post(
   }
 ); // post new
 
+
+router.put(
+  "/upd/:personaid",
+  (req, res)=>{
+    const { nombre, telefono, correo, bio } = req.body;
+    const { personaid } = req.params;
+    var updatedPersona = update(
+      personaid,
+      nombre,
+      telefono,
+      correo,
+      bio
+    );
+    res.status(200).json(updatedPersona);
+  }
+); // put upd
+
+router.delete(
+  "/del/:personaid",
+  (req, res)=>{
+    let {personaid} = req.params;
+    deletePersona(personaid);
+    res.status(200).json({"return":true});
+  }
+);
 /*
 /api/peronas GET
 /api/personas/byid/1234109340981  GET
